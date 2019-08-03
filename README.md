@@ -7,7 +7,7 @@ Builds the app for production to the `build` folder.
 
 ## Demo
 
-[Live DEMO](https://react-effector-colors.netlify.com/)
+[Live DEMO](https://pokedex-mobx.netlify.com/)
 
 ## The project was build using the following technologies:
 
