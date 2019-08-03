@@ -39,8 +39,4 @@ See the section about [running tests](https://facebook.github.io/create-react-ap
 
 ### `npm run build`
 
-![image](https://i.imgur.com/9x1F9At.png)
-![image](https://i.imgur.com/GM0etHA.png)
-
-![image](https://i.imgur.com/QB2zRzf.png)
-![image](https://i.imgur.com/aFowgNg.png)
+![image](https://prnt.sc/oo01jp)
