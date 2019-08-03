@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "experimentalDecorators": true,
+    "baseUrl": "./src",
+    "paths": {
+      "@features/*": ["./features/*"],
+      "@pokedex/ui": ["./ui/index"],
+      "@pokedex/ui/*": ["./ui/*"],
+      "@lib/*": ["./lib/*"]
+    }
+  },
+  "exclude": ["node_modules", "build"]
+}
