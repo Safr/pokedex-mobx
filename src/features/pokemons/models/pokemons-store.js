@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import { observable, action } from 'mobx';
+import { observable, runInAction, action } from 'mobx';
 import { ascendSort, fetchAsync } from '@lib';
 
 const baseURL = 'https://pokeapi.co/api/v2/pokemon';
@@ -29,17 +29,24 @@ export class PokemonsStore {
   @action fetchPokemons(limit = 10) {
     this.loading = true;
     fetchAsync(`${baseURL}?limit=${limit}`).then(res => {
-      this.pokemons = [];
+      runInAction(() => {
+        this.pokemons = [];
+      });
       const results = [...res.data.results];
       results.forEach(resItem => {
         fetchAsync(resItem.url)
           .then(pokemons => {
-            this.loading = false;
+            runInAction(() => {
+              this.loading = false;
+            });
             const pokemonsData = pokemons.data;
-            this.pokemons = ascendSort([
-              ...this.pokemons,
-              flattenPokemons(pokemonsData),
-            ]);
+
+            runInAction(() => {
+              this.pokemons = ascendSort([
+                ...this.pokemons,
+                flattenPokemons(pokemonsData),
+              ]);
+            });
           })
           .catch(err => {
             console.log('err', err);
@@ -51,8 +58,10 @@ export class PokemonsStore {
   @action fetchPokemonById(id) {
     this.loading = true;
     fetchAsync(`${baseURL}/${id}`).then(res => {
-      this.pokemon = flattenPokemons(res.data);
-      this.loading = false;
+      runInAction(() => {
+        this.pokemon = flattenPokemons(res.data);
+        this.loading = false;
+      });
     });
   }
 }
