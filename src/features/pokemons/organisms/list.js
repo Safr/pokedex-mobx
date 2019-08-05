@@ -1,10 +1,9 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import { observer } from 'mobx-react';
 import styled from 'styled-components';
 import media from '@pokedex/ui/theme/media';
 import { Loader } from '@pokedex/ui';
-import { filterArrayByType } from '@lib';
 import image from '../assets/location.svg';
 import { PokemonsContext } from '../models/pokemons-context';
 import { ListItem } from './list-item';
@@ -12,6 +11,10 @@ import { ListItem } from './list-item';
 export const List = observer(({ searchValue }) => {
   const { pokemonsStore } = useContext(PokemonsContext);
   const [filterType, setFilterType] = useState(null);
+  const filteredPokemons = pokemonsStore.getFilteredPokemons(searchValue);
+  const filteredPokemonsByType = pokemonsStore.getFilteredPokemonsByType(
+    filterType,
+  );
 
   const handleFilterByType = useCallback(typeName => {
     setFilterType(typeName);
@@ -21,30 +24,21 @@ export const List = observer(({ searchValue }) => {
     setFilterType(null);
   }, []);
 
-  if (pokemonsStore.loading && pokemonsStore.pokemons.length === 0) {
-    return <Loader />;
-  }
-  let filteredPokemonsByType = null;
-  const filteredPokemons = searchValue
-    ? pokemonsStore.pokemons.filter(
-        pokemon => pokemon.name.toLowerCase().indexOf(searchValue) > -1,
-      )
-    : pokemonsStore.pokemons;
-  if (filterType) {
-    filteredPokemonsByType = filterArrayByType(filteredPokemons, filterType);
-  }
-  const renderData = filterData =>
-    filterData.map(({ name, id, avatar, type }) => (
-      <ListItem
-        key={name}
-        id={id}
-        avatar={avatar}
-        name={name}
-        type={type}
-        onFilterByType={handleFilterByType}
-      />
-    ));
-  const filterResults = () => {
+  const renderData = useCallback(
+    filterData =>
+      filterData.map(({ name, id, avatar, type }) => (
+        <ListItem
+          key={name}
+          id={id}
+          avatar={avatar}
+          name={name}
+          type={type}
+          onFilterByType={handleFilterByType}
+        />
+      )),
+    [handleFilterByType],
+  );
+  const filterResults = useCallback(() => {
     if (filteredPokemons.length === 0) {
       return (
         <P>
@@ -56,11 +50,15 @@ export const List = observer(({ searchValue }) => {
     return !filterType
       ? renderData(filteredPokemons)
       : renderData(filteredPokemonsByType);
-  };
+  }, [filterType, filteredPokemons, filteredPokemonsByType, renderData]);
+
+  if (pokemonsStore.loading && pokemonsStore.pokemons.length === 0) {
+    return <Loader />;
+  }
   return (
     <>
       <Wrapper isEmpty={filteredPokemons.length === 0}>
-        {pokemonsStore.pokemons.length > 0 ? filterResults() : <Loader />}
+        {filterResults()}
       </Wrapper>
       {filterType ? <ResetBtn onClick={handleReset}>Reset</ResetBtn> : null}
     </>

@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 import { observable, runInAction, action } from 'mobx';
-import { ascendSort, fetchAsync } from '@lib';
+import { computedFn } from 'mobx-utils';
+import { ascendSort, fetchAsync, filterArrayByType } from '@lib';
 
 const baseURL = 'https://pokeapi.co/api/v2/pokemon';
 
@@ -25,6 +26,20 @@ export class PokemonsStore {
   @observable pokemon = null;
 
   @observable loading = false;
+
+  getFilteredPokemons = computedFn(function filterPokemons(searchValue) {
+    return searchValue
+      ? this.pokemons.filter(
+          pokemon => pokemon.name.toLowerCase().indexOf(searchValue) > -1,
+        )
+      : this.pokemons;
+  });
+
+  getFilteredPokemonsByType = computedFn(function filterPokemons(type) {
+    return type
+      ? filterArrayByType(this.getFilteredPokemons(''), type)
+      : this.getFilteredPokemons('');
+  });
 
   @action fetchPokemons(limit = 10) {
     this.loading = true;

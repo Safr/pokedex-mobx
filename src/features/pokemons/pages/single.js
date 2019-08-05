@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { observer } from 'mobx-react';
-import { toJS } from 'mobx';
 import styled from 'styled-components';
 import media from '@pokedex/ui/theme/media';
 import { Page } from '@features/common/templates';

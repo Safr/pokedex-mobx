@@ -12,10 +12,13 @@ export const Header = props => {
     textInput.current.focus();
   }, [textInput]);
 
-  const handleSearch = useCallback(evt => {
-    setInputValue(evt.target.value);
-    props.onSearchValue(evt.target.value);
-  }, []);
+  const handleSearch = useCallback(
+    evt => {
+      setInputValue(evt.target.value);
+      props.onSearchValue(evt.target.value);
+    },
+    [props],
+  );
   return (
     <HeaderContainer>
       <Title>Pokedex</Title>

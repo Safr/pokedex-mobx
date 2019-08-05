@@ -1,13 +1,11 @@
 import React, { useContext, useEffect, useMemo, useState } from 'react';
-import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
 import { observer } from 'mobx-react';
 import { Pagination } from '@pokedex/ui';
 import { Page } from '@features/common/templates';
 import { Header, List } from '../organisms';
 import { PokemonsContext } from '../models/pokemons-context';
 
-export const Pokemons = props => {
+export const Pokemons = observer(() => {
   const { pokemonsStore } = useContext(PokemonsContext);
   const [searchValue, setSearchValue] = useState('');
   const [itemsCount, setItemsCount] = useState(10);
@@ -20,8 +18,11 @@ export const Pokemons = props => {
   };
 
   useEffect(() => {
-    pokemonsStore.fetchPokemons(itemsCount);
+    if (pokemonsStore.pokemons.length === 0 || itemsCount) {
+      pokemonsStore.fetchPokemons(itemsCount);
+    }
   }, [itemsCount, pokemonsStore]);
+
   return (
     <Page>
       <Header onSearchValue={setSearchValue} />
@@ -31,12 +32,8 @@ export const Pokemons = props => {
         activeShowCount={itemsCount}
         onPageSelect={handlePageSelect}
       />
-      {/* <List activePage={this.state.activePage} />
-        <Pagination onPageSelect={this.handlePageSelect} /> */}
-      {/* <List />
-        <Pagination /> */}
     </Page>
   );
-};
+});
 
 Pokemons.propTypes = {};
