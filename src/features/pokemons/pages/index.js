@@ -18,11 +18,8 @@ export const Pokemons = observer(() => {
   };
 
   useEffect(() => {
-    if (pokemonsStore.pokemons.length === 0 || itemsCount) {
-      pokemonsStore.fetchPokemons(itemsCount);
-    }
+    pokemonsStore.fetchPokemons(itemsCount);
   }, [itemsCount, pokemonsStore]);
-
   return (
     <Page>
       <Header onSearchValue={setSearchValue} />
